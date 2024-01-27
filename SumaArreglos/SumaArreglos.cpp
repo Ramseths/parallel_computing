@@ -2,12 +2,11 @@
 #include <iostream>
 #include <omp.h>
 #include <random>
-#include <stdlib.h>
 #include <time.h>
 
-#define N 5000 // Cantidad de elementos en los arreglos
+#define N 50000 // Cantidad de elementos en los arreglos
 #define chunk 250 // Cantidad de elementos para cada hilo
-#define elements 10 // Elementos que se mostrarán
+#define elements 5 // Elementos que se mostrarán
 
 void showArrayValues(int* d);
 
@@ -18,31 +17,31 @@ int main()
     // Semilla para números aleatorios
     srand(time(NULL));
 
-    int a[N], b[N], c[N];
+    int arrUno[N], arrDos[N], arrRes[N];
 
     // Se generan valores aleatorios
     for (int i = 0; i < N; ++i) {
-        a[i] = rand() % 10;
-        b[i] = rand() % 10;
+        arrUno[i] = rand() % 10;
+        arrDos[i] = rand() % 10;
     }
 
     int batchSize = chunk;
     int i;
 
 #pragma omp parallel for \
-    shared(a, b, c, batchSize) private (i) \
+    shared(arrUno, arrDos, arrRes, batchSize) private (i) \
     schedule(static, batchSize)
     for (i = 0; i < N; i++) {
-        c[i] = a[i] + b[i];
+        arrRes[i] = arrUno[i] + arrDos[i];
     }
 
     // Mostrar mensajes en consola
-    std::cout << "Mostrando los primeros 10 valores del arreglo a" << std::endl;
-    showArrayValues(a);
-    std::cout << "\nMostrando los primeros 10 valores del arreglo b" << std::endl;
-    showArrayValues(b);
-    std::cout << "\nMostrando los primeros 10 resultados de la suma de los arreglos en c" << std::endl;
-    showArrayValues(c);
+    std::cout << "Mostrando los primeros 10 valores del arreglo uno" << std::endl;
+    showArrayValues(arrUno);
+    std::cout << "\nMostrando los primeros 10 valores del arreglo dos" << std::endl;
+    showArrayValues(arrDos);
+    std::cout << "\nMostrando los primeros 10 resultados de la suma de los arreglos" << std::endl;
+    showArrayValues(arrRes);
 }
 
 void showArrayValues(int* d) {
